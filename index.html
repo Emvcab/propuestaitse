@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta PP2 — DGEyC × ITSE 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#0f1e3d;--blue:#1a4480;--accent:#e8a020;--accent2:#f0c060;
+    --green:#1a6b3a;--white:#f8f6f0;--muted:rgba(248,246,240,0.55);--border:rgba(248,246,240,0.1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;}
+
+  .hero{min-height:100vh;display:grid;place-items:center;position:relative;padding:3rem 2rem;text-align:center;}
+  .hero::before{content:'';position:absolute;inset:0;
+    background-image:linear-gradient(rgba(248,246,240,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(248,246,240,0.025) 1px,transparent 1px);
+    background-size:60px 60px;pointer-events:none;}
+  .hero::after{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(26,68,128,0.3) 0%,transparent 70%);pointer-events:none;}
+  .hero-inner{position:relative;z-index:1;max-width:800px;}
+  .badge{display:inline-block;background:rgba(232,160,32,0.12);border:1px solid rgba(232,160,32,0.35);
+    color:var(--accent2);font-size:0.7rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    padding:0.35rem 1.1rem;border-radius:2rem;margin-bottom:2rem;animation:up 0.5s ease both;}
+  .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,6vw,4.2rem);line-height:1.1;
+    margin-bottom:1.2rem;animation:up 0.5s 0.1s ease both;}
+  .hero h1 em{font-style:italic;color:var(--accent);}
+  .hero-sub{font-size:1rem;font-weight:300;color:var(--muted);max-width:580px;margin:0 auto 2.5rem;line-height:1.7;animation:up 0.5s 0.2s ease both;}
+  .hero-meta{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;font-size:0.78rem;color:rgba(248,246,240,0.35);animation:up 0.5s 0.3s ease both;}
+  .hero-meta strong{color:var(--accent);font-weight:600;}
+  .scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(248,246,240,0.2);display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:1;}
+  .scroll::after{content:'';width:1px;height:36px;background:linear-gradient(to bottom,rgba(248,246,240,0.2),transparent);}
+
+  .timer{background:rgba(15,30,61,0.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:1rem 2rem;text-align:center;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;}
+  .timer-lbl{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
+  #tDisplay{font-family:'DM Serif Display',serif;font-size:2.2rem;letter-spacing:-0.02em;display:block;line-height:1;}
+  #tDisplay.warn{color:var(--accent);}#tDisplay.danger{color:#e84040;}
+  .timer-btns{display:flex;gap:0.5rem;align-items:center;}
+  .btn{padding:0.4rem 1.2rem;border-radius:0.4rem;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;}
+  .btn-a{background:var(--accent);color:var(--navy);}
+  .btn-a:hover{background:var(--accent2);transform:translateY(-1px);}
+  .btn-b{background:transparent;color:var(--white);border:1px solid var(--border);}
+  .btn-b:hover{border-color:var(--accent);color:var(--accent);}
+
+  .sec{max-width:860px;margin:0 auto;padding:5rem 2rem;}
+  .sec-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:2.5rem;}
+  .sec-n{font-family:'DM Serif Display',serif;font-size:3.5rem;color:rgba(248,246,240,0.07);line-height:1;flex-shrink:0;}
+  .sec-t{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.2;}
+  .sec-t em{font-style:italic;color:var(--accent);}
+  .divider{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);}
+  .body-text{font-size:0.9rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem;}
+  .body-text strong{color:var(--white);}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0.9rem;}
+  .card{background:rgba(248,246,240,0.04);border:1px solid var(--border);border-radius:0.7rem;padding:1.3rem 1.4rem;opacity:0;transform:translateY(16px);}
+  .card.in{opacity:1;transform:translateY(0);transition:opacity 0.45s ease,transform 0.45s ease;}
+  .card:hover{border-color:rgba(232,160,32,0.3);}
+  .card-icon{font-size:1.5rem;margin-bottom:0.6rem;}
+  .card-title{font-size:0.88rem;font-weight:600;color:var(--accent2);margin-bottom:0.4rem;}
+  .card-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+
+  .steps{display:flex;flex-direction:column;gap:0.9rem;}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:1rem;align-items:start;opacity:0;transform:translateY(12px);}
+  .step.in{opacity:1;transform:translateY(0);transition:opacity 0.45s ease,transform 0.45s ease;}
+  .step-n{width:44px;height:44px;background:rgba(26,68,128,0.35);border:1px solid rgba(26,68,128,0.5);border-radius:0.45rem;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--accent);flex-shrink:0;}
+  .step-body h4{font-size:0.9rem;font-weight:600;margin-bottom:0.25rem;color:var(--white);}
+  .step-body p{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+
+  .caja{border-radius:0.8rem;padding:1.5rem 1.8rem;margin:1.2rem 0;}
+  .caja h3{font-size:1rem;font-weight:600;margin-bottom:0.5rem;}
+  .caja p{font-size:0.85rem;line-height:1.7;}
+  .caja-accent{background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.25);}
+  .caja-accent h3{color:var(--accent);}
+  .caja-accent p{color:var(--muted);}
+  .caja-green{background:rgba(26,107,58,0.1);border:1px solid rgba(26,107,58,0.25);}
+  .caja-green h3{color:#86efac;}
+  .caja-green p{color:var(--muted);}
+  .caja-blue{background:rgba(26,68,128,0.2);border:1px solid rgba(26,68,128,0.4);}
+  .caja-blue h3{color:#8ab4f8;}
+  .caja-blue p{color:var(--muted);}
+
+  .var-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin:1rem 0;}
+  .var-table th{text-align:left;padding:0.7rem 1rem;background:rgba(26,68,128,0.4);color:var(--accent2);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--border);}
+  .var-table td{padding:0.8rem 1rem;border-bottom:1px solid rgba(248,246,240,0.05);color:var(--muted);line-height:1.5;vertical-align:top;}
+  .var-table tr:last-child td{border-bottom:none;}
+  .var-table tr:hover td{background:rgba(248,246,240,0.02);}
+  .var-name{color:var(--white)!important;font-weight:500;}
+
+  .hitos{display:flex;flex-direction:column;gap:0.7rem;}
+  .hito{display:grid;grid-template-columns:100px 1fr;gap:0.8rem;opacity:0;transform:translateY(10px);}
+  .hito.in{opacity:1;transform:translateY(0);transition:opacity 0.45s ease,transform 0.45s ease;}
+  .hito-fecha{border-radius:0.4rem;padding:0.7rem;text-align:center;}
+  .hito-label{font-size:0.65rem;color:rgba(248,246,240,0.4);margin-bottom:2px;}
+  .hito-date{font-size:0.82rem;font-weight:600;}
+  .hito-body{background:rgba(248,246,240,0.04);border:1px solid var(--border);border-radius:0.4rem;padding:0.7rem 1rem;}
+  .hito-body h4{font-size:0.85rem;font-weight:600;margin-bottom:0.2rem;}
+  .hito-body p{font-size:0.78rem;color:var(--muted);line-height:1.5;}
+
+  .stack{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.2rem;}
+  .pill{background:rgba(248,246,240,0.06);border:1px solid var(--border);border-radius:2rem;padding:0.3rem 0.9rem;font-size:0.75rem;color:var(--muted);}
+  .pill strong{color:var(--white);font-weight:500;}
+
+  .cta{background:linear-gradient(135deg,rgba(26,68,128,0.2),rgba(232,160,32,0.06));border-top:1px solid var(--border);padding:5rem 2rem;text-align:center;}
+  .cta-q{font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.7rem);line-height:1.5;max-width:680px;margin:0 auto 1.5rem;color:rgba(248,246,240,0.85);}
+  .cta-q em{font-style:normal;color:var(--accent);}
+  .cta-src{font-size:0.72rem;color:rgba(248,246,240,0.3);letter-spacing:0.1em;text-transform:uppercase;}
+  footer{padding:1.8rem 2rem;text-align:center;font-size:0.72rem;color:rgba(248,246,240,0.2);border-top:1px solid rgba(248,246,240,0.06);}
+  @keyframes up{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  @media(max-width:600px){.hero h1{font-size:2rem;}#tDisplay{font-size:3rem;}.var-table{font-size:0.72rem;}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">Práctica Profesionalizante II · ITSE · 2026</div>
+    <h1>Propuesta de<br>proyecto <em>PP2</em></h1>
+    <p class="hero-sub">Dashboard de gestión estadística con modelo de clustering para la Dirección General de Estadística y Censos de Santiago del Estero.</p>
+    <div class="hero-meta">
+      <span>Director <strong>Roberto Ferreira Lesye</strong></span>
+      <span>·</span>
+      <span><strong>Achaval · Cabaña · Gomez · Pinto Villegas</strong></span>
+      <span>·</span>
+      <span>Abril <strong>2026</strong></span>
+    </div>
+  </div>
+  <div class="scroll">scroll</div>
+</section>
+
+<div class="timer">
+  <div class="timer-lbl">Cronómetro — presentación de 5 minutos</div>
+  <span id="tDisplay">5:00</span>
+  <div class="timer-btns">
+    <button class="btn btn-a" onclick="startTimer()">▶ Iniciar</button>
+    <button class="btn btn-b" onclick="resetTimer()">↺ Reiniciar</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 1. EL PROBLEMA -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">01</span><h2 class="sec-t">El <em>problema</em> identificado</h2></div>
+  <p class="body-text">En la entrevista diagnóstica con la Dirección se identificó que existe un <strong>alto índice de rechazo ciudadano a las encuestas</strong>. Con un 70% de rechazo en preguntas sobre ingresos, los datos de pobreza resultan incompletos e inexactos, afectando la calidad de las políticas públicas provinciales.</p>
+  <p class="body-text">Las raíces del rechazo son tres: <strong>temor a controles fiscales</strong>, <strong>desconocimiento del rol institucional</strong> de la Dirección y <strong>preocupación por la privacidad</strong>. El problema de fondo es que la Dirección no sabe dónde ni por qué se concentra ese rechazo.</p>
+  <div class="cards">
+    <div class="card"><div class="card-icon">📉</div><div class="card-title">Rechazo sin ubicación</div><div class="card-desc">No se sabe en qué departamentos se concentra el problema ni qué características tienen esas zonas.</div></div>
+    <div class="card"><div class="card-icon">📁</div><div class="card-title">Datos dispersos</div><div class="card-desc">Los datos del Censo 2022 están en múltiples archivos que nadie cruza para tomar decisiones.</div></div>
+    <div class="card"><div class="card-icon">🎯</div><div class="card-title">Recursos sin foco</div><div class="card-desc">Los encuestadores se asignan sin evidencia. No se distingue entre zonas fáciles y zonas críticas.</div></div>
+    <div class="card"><div class="card-icon">⏱️</div><div class="card-title">Reportes lentos</div><div class="card-desc">Generar informes para otros ministerios toma horas de trabajo manual en Excel.</div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 2. LA PROPUESTA -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">02</span><h2 class="sec-t">La <em>propuesta</em></h2></div>
+  <p class="body-text">Se propone desarrollar un <strong>dashboard interactivo en Power BI</strong> alimentado por datos del Censo 2022 y por los registros operativos internos de la Dirección. Retoma la <strong>Solución 1 del PP1 — Mapeo Inteligente</strong> y la convierte en una implementación concreta y ejecutable dentro de los plazos de la práctica.</p>
+  <div class="caja caja-accent">
+    <h3>Objetivo del proyecto</h3>
+    <p>Responder la pregunta: <strong style="color:var(--white)">¿En qué departamentos se concentra el rechazo a las encuestas y qué características sociodemográficas tienen esas zonas?</strong> Con esa respuesta, la Dirección podrá planificar los operativos de campo con evidencia en lugar de intuición.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 3. LAS VARIABLES -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">03</span><h2 class="sec-t">Las <em>variables</em> del análisis</h2></div>
+  <p class="body-text">Se van a usar variables del <strong>contexto territorial</strong> del Censo 2022 como hipótesis teóricas iniciales. El análisis bivariado del Hito 2 va a confirmar o descartar cada una según su correlación real con la tasa de rechazo.</p>
+
+  <table class="var-table">
+    <thead>
+      <tr><th>Variable</th><th>Fuente</th><th>Hipótesis de relación con el rechazo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="var-name">Densidad poblacional</td><td>Censo 2022</td><td>Zonas dispersas tienen más ausentes y mayor costo por visita — rechazo estructural por dispersión.</td></tr>
+      <tr><td class="var-name">Variación poblacional</td><td>Censo 2022</td><td>Zonas en retroceso tienen menor presencia del Estado — mayor desconfianza institucional.</td></tr>
+      <tr><td class="var-name">% acceso a agua de red</td><td>Censo 2022</td><td>Sin agua de red = zona históricamente excluida = mayor desconfianza hacia organismos del Estado.</td></tr>
+      <tr><td class="var-name">% sin baño</td><td>Censo 2022</td><td>Condiciones habitacionales extremas se asocian con mayor percepción de amenaza ante el Estado.</td></tr>
+      <tr><td class="var-name">% uso de leña o carbón</td><td>Censo 2022</td><td>Indicador de aislamiento. Zonas más difíciles de acceder y más alejadas del Estado.</td></tr>
+      <tr><td class="var-name">% acceso a internet</td><td>Censo 2022</td><td>Sin internet, las campañas de comunicación previa no llegan. Mayor desconocimiento institucional.</td></tr>
+      <tr style="background:rgba(232,160,32,0.06);">
+        <td class="var-name" style="color:var(--accent)!important;">⭐ Tasa de rechazo</td>
+        <td style="color:var(--accent);">Datos internos</td>
+        <td style="color:var(--accent);">Variable objetivo. % de viviendas que se niegan a responder. Es el número que todo el análisis busca explicar. Se solicita en esta reunión.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="caja caja-blue">
+    <h3>Aclaración importante</h3>
+    <p>La selección de variables del Censo es una <strong style="color:var(--white)">hipótesis teórica informada</strong>, no un hecho confirmado. El análisis bivariado del Hito 2 va a verificar cuáles se correlacionan realmente con el rechazo. Las que no muestren correlación se descartarán antes de entrenar el modelo.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 4. EL MODELO -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">04</span><h2 class="sec-t">Cómo se van a <em>agrupar</em> los departamentos</h2></div>
+  <p class="body-text">Se va a usar un método automático que analiza todas las variables juntas y agrupa los 27 departamentos según qué tan parecidos son entre sí. El resultado son 4 grupos o perfiles de territorio. Cada perfil va a recibir una estrategia de campo diferente — porque no tiene sentido mandar el mismo tipo de encuestador a Capital que a Mitre.</p>
+  <div class="cards">
+    <div class="card" style="border-left:3px solid #3b82f6;"><div class="card-icon">🔵</div><div class="card-title">Urbano denso</div><div class="card-desc">Capital, Banda. Muchos habitantes, servicios completos. Estrategia: avisar antes de la visita por redes o medios.</div></div>
+    <div class="card" style="border-left:3px solid #22c55e;"><div class="card-icon">🟢</div><div class="card-title">Rural en crecimiento</div><div class="card-desc">Atamisqui, Robles. Poca densidad pero zona en expansión. Estrategia: más encuestadores para cubrir distancias.</div></div>
+    <div class="card" style="border-left:3px solid #f59e0b;"><div class="card-icon">🟡</div><div class="card-title">Rural con carencias</div><div class="card-desc">Figueroa, Salavina. Zonas con poco acceso a servicios básicos. Estrategia: encuestadores con más tiempo y mejor explicación del propósito.</div></div>
+    <div class="card" style="border-left:3px solid #ef4444;"><div class="card-icon">🔴</div><div class="card-title">Zona crítica</div><div class="card-desc">Mitre, Aguirre. Máxima dificultad, población en retroceso. Requiere una estrategia completamente diferente al resto.</div></div>
+  </div>
+  <div class="caja caja-green" style="margin-top:1.5rem;">
+    <h3>Qué va a poder hacer la Dirección con esto</h3>
+    <p>Va a poder <strong style="color:var(--white)">planificar cada operativo según el tipo de zona</strong> — mandar los recursos correctos al lugar correcto, diseñar el mensaje adecuado para cada perfil de ciudadano y generar reportes para el gobierno en segundos en lugar de horas.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 4B. DEMO -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">★</span><h2 class="sec-t">Así se va a <em>ver</em> el resultado</h2></div>
+  <p class="body-text">Este es un ejemplo de cómo va a quedar el panel final. Los números son reales del Censo 2022. Los colores del mapa representan el nivel de dificultad de cada zona.</p>
+
+  <!-- PANEL DEMO -->
+  <div style="background:#f8f6f0;border-radius:1rem;overflow:hidden;color:#1a1a2e;font-family:'DM Sans',sans-serif;">
+
+    <!-- Barra superior -->
+    <div style="background:#1a4480;padding:0.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:0.78rem;color:rgba(248,246,240,0.7);">Panel estadístico — DGEyC Santiago del Estero</span>
+      <span style="font-size:0.68rem;background:rgba(255,255,255,0.15);color:#f8f6f0;padding:2px 10px;border-radius:20px;">Ejemplo con datos reales</span>
+    </div>
+
+    <!-- KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:1rem;background:#ede9e0;">
+      <div style="background:#fff;border-radius:6px;padding:10px 12px;text-align:center;">
+        <div style="font-size:17px;font-weight:600;">1.060.906</div>
+        <div style="font-size:10px;color:#888;margin-top:2px;">Habitantes 2022</div>
+      </div>
+      <div style="background:#fff;border-radius:6px;padding:10px 12px;text-align:center;">
+        <div style="font-size:17px;font-weight:600;color:#1a6b3a;">+21,4%</div>
+        <div style="font-size:10px;color:#888;margin-top:2px;">Creció desde 2010</div>
+      </div>
+      <div style="background:#fff;border-radius:6px;padding:10px 12px;text-align:center;">
+        <div style="font-size:17px;font-weight:600;">27</div>
+        <div style="font-size:10px;color:#888;margin-top:2px;">Departamentos</div>
+      </div>
+      <div style="background:#fff;border-radius:6px;padding:10px 12px;text-align:center;">
+        <div style="font-size:17px;font-weight:600;color:#c0392b;" id="rejKpi">—</div>
+        <div style="font-size:10px;color:#888;margin-top:2px;">Tasa de rechazo</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid #ddd;background:#fff;padding:0 1rem;" id="demoTabs">
+      <button onclick="showDemo('pob')" class="dtb" id="dtb-pob" style="padding:8px 14px;font-size:12px;border:none;background:none;cursor:pointer;border-bottom:2px solid #1a4480;font-weight:600;color:#1a4480;font-family:'DM Sans',sans-serif;">¿Cuántos viven?</button>
+      <button onclick="showDemo('vuln')" class="dtb" id="dtb-vuln" style="padding:8px 14px;font-size:12px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:#888;font-family:'DM Sans',sans-serif;">¿Qué tan difícil es?</button>
+      <button onclick="showDemo('grupos')" class="dtb" id="dtb-grupos" style="padding:8px 14px;font-size:12px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:#888;font-family:'DM Sans',sans-serif;">¿En qué grupo está?</button>
+    </div>
+
+    <div style="padding:1rem;background:#fff;min-height:210px;">
+
+      <!-- TAB POB -->
+      <div id="ddp-pob">
+        <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Habitantes por departamento — los 7 más grandes</div>
+        <div id="demoBarsEl"></div>
+        <div style="margin-top:10px;background:#fef9c3;border-radius:6px;padding:8px 12px;font-size:11px;color:#7d4a00;">
+          ⚠ Capital concentra el 31% de toda la provincia. Banda el 16%. El resto está muy distribuido.
+        </div>
+      </div>
+
+      <!-- TAB VULN -->
+      <div id="ddp-vuln" style="display:none;">
+        <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">Nivel de dificultad de cada zona para encuestar — de mayor a menor</div>
+        <div style="background:#e8f4ff;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#185FA5;">
+          Se calcula combinando: falta de agua de red, uso de leña, falta de baño y falta de internet. Más alto = más difícil.
+        </div>
+        <div id="demoVulnEl"></div>
+      </div>
+
+      <!-- TAB GRUPOS -->
+      <div id="ddp-grupos" style="display:none;">
+        <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Grupos de departamentos según sus características — cada color es una estrategia diferente</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="border-left:3px solid #3b82f6;background:#eff6ff;border-radius:0 6px 6px 0;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:600;color:#1a4480;margin-bottom:3px;">🔵 Zona urbana</div>
+            <div style="font-size:11px;color:#555;">Capital · Banda · Río Hondo</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Avisar antes por redes sociales</div>
+          </div>
+          <div style="border-left:3px solid #22c55e;background:#f0fdf4;border-radius:0 6px 6px 0;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:600;color:#1a6b3a;margin-bottom:3px;">🟢 Rural en expansión</div>
+            <div style="font-size:11px;color:#555;">Atamisqui · Robles · Avellaneda</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Más encuestadores para cubrir distancias</div>
+          </div>
+          <div style="border-left:3px solid #f59e0b;background:#fffbeb;border-radius:0 6px 6px 0;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:600;color:#92400e;margin-bottom:3px;">🟡 Rural con carencias</div>
+            <div style="font-size:11px;color:#555;">Figueroa · Salavina · Moreno</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Más tiempo por visita, mejor explicación</div>
+          </div>
+          <div style="border-left:3px solid #ef4444;background:#fef2f2;border-radius:0 6px 6px 0;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:600;color:#991b1b;margin-bottom:3px;">🔴 Zona crítica</div>
+            <div style="font-size:11px;color:#555;">Mitre · Aguirre · Sarmiento</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Estrategia completamente diferente</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:#f0ede5;border-radius:6px;padding:8px 12px;font-size:11px;color:#555;line-height:1.6;">
+          <strong style="color:#1a1a2e;">Hoy la Dirección trata todos los departamentos igual.</strong> Con este panel va a saber exactamente qué tipo de zona es cada uno y cómo actuar en consecuencia.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 5. LO QUE NECESITAMOS -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">05</span><h2 class="sec-t">Lo que se <em>necesita</em> de la Dirección</h2></div>
+  <p class="body-text">Para que el proyecto pueda responder la pregunta central se necesitan los <strong>registros operativos internos</strong>. Sin la tasa de rechazo, el análisis puede describir el territorio pero no puede explicar el problema.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <h4>Registros de viviendas visitadas y rechazadas</h4>
+        <p>Por departamento o zona, de cualquier operativo previo. Pueden ser datos anonimizados o agregados.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <h4>Formato disponible</h4>
+        <p>¿Los datos están en Excel, en un sistema propio o son registros físicos? Eso define el siguiente paso técnico del proyecto.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <h4>Si no están digitalizados</h4>
+        <p>Se propone una planilla de registro operativo con cálculo automático de tasa de rechazo y semáforo por departamento, lista para conectar a Power BI desde el primer operativo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 6. CRONOGRAMA -->
+<div class="sec">
+  <div class="sec-head"><span class="sec-n">06</span><h2 class="sec-t"><em>Cronograma</em> de entrega</h2></div>
+  <div class="hitos">
+    <div class="hito">
+      <div class="hito-fecha" style="background:rgba(26,107,58,0.2);border:1px solid rgba(26,107,58,0.4);">
+        <div class="hito-label">Hito 1</div>
+        <div class="hito-date" style="color:#86efac;">18 mayo</div>
+      </div>
+      <div class="hito-body">
+        <h4 style="color:#86efac;">Datos y preprocesamiento</h4>
+        <p>Dataset del Censo 2022 limpio y estructurado. Coordenadas geográficas oficiales del IGN. Preprocesamiento documentado en Python.</p>
+      </div>
+    </div>
+    <div class="hito">
+      <div class="hito-fecha" style="background:rgba(211,84,0,0.15);border:1px solid rgba(211,84,0,0.35);">
+        <div class="hito-label">Hito 2</div>
+        <div class="hito-date" style="color:var(--accent2);">8 junio</div>
+      </div>
+      <div class="hito-body">
+        <h4 style="color:var(--accent2);">EDA completo</h4>
+        <p>Análisis univariado, bivariado y multivariado. Correlación entre variables del Censo y tasa de rechazo. Selección final de variables para el modelo.</p>
+      </div>
+    </div>
+    <div class="hito">
+      <div class="hito-fecha" style="background:rgba(248,246,240,0.05);border:1px solid var(--border);">
+        <div class="hito-label">Hito 3</div>
+        <div class="hito-date" style="color:rgba(248,246,240,0.5);">6 julio</div>
+      </div>
+      <div class="hito-body">
+        <h4 style="color:rgba(248,246,240,0.6);">Modelo + Dashboard + Presentación</h4>
+        <p>Modelo K-Means entrenado. Dashboard completo en Power BI. Presentación stand-up ante la Dirección.</p>
+      </div>
+    </div>
+  </div>
+  <div class="stack">
+    <span class="pill"><strong>Python 3</strong></span>
+    <span class="pill"><strong>pandas</strong> · openpyxl · shapely</span>
+    <span class="pill"><strong>scikit-learn</strong> K-Means</span>
+    <span class="pill"><strong>Power BI</strong> Desktop</span>
+    <span class="pill"><strong>INDEC</strong> Censo 2022</span>
+    <span class="pill"><strong>IGN</strong> GeoJSON oficial</span>
+  </div>
+</div>
+
+<div class="cta">
+  <p class="cta-q">"Se propone convertir los datos del Censo 2022 en información visual accionable para que la Dirección sepa <em>dónde y por qué</em> se rechaza la encuesta — y pueda planificar sus operativos con evidencia."</p>
+  <div class="cta-src">ITSE · Tecnicatura en Ciencia de Datos e IA · PP2 · 2026</div>
+</div>
+
+<footer>Achaval · Cabaña · Gomez · Pinto Villegas &nbsp;—&nbsp; DGEyC · Santiago del Estero</footer>
+
+<script>
+// DEMO
+const dDeps=[{dep:'Capital',pob:330112,pct:100},{dep:'Banda',pob:170651,pct:52},{dep:'Río Hondo',pob:66761,pct:20},{dep:'Robles',pob:54015,pct:16},{dep:'Gral. Taboada',pob:46508,pct:14},{dep:'Choya',pob:43736,pct:13},{dep:'Moreno',pob:40460,pct:12}];
+const dVuln=[{dep:'Mitre',idx:51.6,c:'#c0392b',s:'🔴 Muy difícil'},{dep:'Salavina',idx:46.8,c:'#c0392b',s:'🔴 Muy difícil'},{dep:'Figueroa',idx:46.6,c:'#c0392b',s:'🔴 Muy difícil'},{dep:'San Martín',idx:43.4,c:'#d35400',s:'🟡 Difícil'},{dep:'Sarmiento',idx:41.4,c:'#d35400',s:'🟡 Difícil'},{dep:'Banda',idx:14.8,c:'#1a6b3a',s:'🟢 Manejable'},{dep:'Capital',idx:7.5,c:'#1a6b3a',s:'🟢 Manejable'}];
+const bEl=document.getElementById('demoBarsEl');
+if(bEl) dDeps.forEach(d=>{bEl.innerHTML+=`<div style="display:grid;grid-template-columns:100px 1fr 60px;align-items:center;gap:8px;margin-bottom:6px;font-size:11px;color:#555;"><span style="text-align:right;">${d.dep}</span><div style="height:6px;background:#e8e4dc;border-radius:3px;overflow:hidden;"><div style="width:${d.pct}%;height:100%;border-radius:3px;background:linear-gradient(to right,#1a4480,#378add);"></div></div><span style="color:#888;">${(d.pob/1000).toFixed(0)}k</span></div>`;});
+const vEl=document.getElementById('demoVulnEl');
+if(vEl) dVuln.forEach(d=>{const p=Math.round(d.idx/51.6*100);vEl.innerHTML+=`<div style="display:grid;grid-template-columns:100px 1fr 36px 80px;align-items:center;gap:8px;margin-bottom:5px;font-size:11px;color:#555;"><span style="text-align:right;">${d.dep}</span><div style="height:6px;background:#e8e4dc;border-radius:3px;overflow:hidden;"><div style="width:${p}%;height:100%;background:${d.c};border-radius:3px;"></div></div><span style="color:${d.c};font-weight:600;">${d.idx}</span><span style="font-size:10px;color:#888;">${d.s}</span></div>`;});
+function showDemo(id){['pob','vuln','grupos'].forEach(t=>{const p=document.getElementById('ddp-'+t);const b=document.getElementById('dtb-'+t);if(!p||!b) return;if(t===id){p.style.display='block';b.style.borderBottom='2px solid #1a4480';b.style.fontWeight='600';b.style.color='#1a4480';}else{p.style.display='none';b.style.borderBottom='2px solid transparent';b.style.fontWeight='normal';b.style.color='#888';}});}
+
+let t=300,iv=null;
+const d=document.getElementById('tDisplay');
+function fmt(s){return`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;}
+function upd(){d.textContent=fmt(t);d.className=t<=60&&t>30?'warn':t<=30?'danger':'';}
+function startTimer(){if(iv){clearInterval(iv);iv=null;return;}iv=setInterval(()=>{if(t<=0){clearInterval(iv);iv=null;return;}t--;upd();},1000);}
+function resetTimer(){clearInterval(iv);iv=null;t=300;upd();}
+
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const delay=e.target.dataset.d||0;
+      setTimeout(()=>e.target.classList.add('in'),delay);
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:0.12});
+
+document.querySelectorAll('.card').forEach((el,i)=>{el.dataset.d=i*80;obs.observe(el);});
+document.querySelectorAll('.step').forEach((el,i)=>{el.dataset.d=i*100;obs.observe(el);});
+document.querySelectorAll('.hito').forEach((el,i)=>{el.dataset.d=i*120;obs.observe(el);});
+</script>
+</body>
+</html>
